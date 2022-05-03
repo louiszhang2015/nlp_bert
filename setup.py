@@ -47,6 +47,14 @@ setup(
     install_requires=[
     ],
     extras_require={
+        "dev": [
+            "freezegun==1.1.0",
+            "bump2version==1.0.1",
+            "black==21.7b0",
+            "isort==5.9.3",
+            "flake8==3.9.2",
+            "pre-commit==2.14.0",
+        ],
     },
     python_requires=">=3.6",
 )
