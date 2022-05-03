@@ -47,6 +47,7 @@ class BertClassifier(nn.Module):
 
         # Extract the last hidden state of the token `[CLS]` for classification task
         last_hidden_state_cls = outputs[0][:, 0, :] # [32, 768]
+        # outputs[1] would be the same
 
         # Feed input to classifier to compute logits
         logits = self.classifier(last_hidden_state_cls) # [32, 2]
