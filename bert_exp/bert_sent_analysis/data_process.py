@@ -4,9 +4,11 @@ import os
 from tqdm import tqdm
 import numpy as np
 import pandas as pd
+import torch
 import matplotlib.pyplot as plt
 
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
+MAX_LEN = 64
 
 def text_preprocessing(text):
     """
@@ -52,6 +54,8 @@ def preprocessing_for_bert(data):
         input_ids.append(encoded_sent.get('input_ids'))
         attention_masks.append(encoded_sent.get('attention_mask'))
 
+        # tokenizer.convert_ids_to_tokens(101)
+
     # Convert lists to tensors
     input_ids = torch.tensor(input_ids)
     attention_masks = torch.tensor(attention_masks)
@@ -67,6 +71,7 @@ def find_max_length(data, test_data):
     # Encode our concatenated data
     encoded_tweets = [tokenizer.encode(sent, add_special_tokens=True) for sent in all_tweets]
 
+    import pdb; pdb.set_trace()
     # Find the maximum length
     max_len = max([len(sent) for sent in encoded_tweets])
     print('Max length: ', max_len)
