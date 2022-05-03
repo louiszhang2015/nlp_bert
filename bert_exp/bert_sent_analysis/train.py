@@ -110,8 +110,8 @@ def train(model, train_dataloader, val_dataloader=None, device = None, optimizer
             # Perform a forward pass. This will return logits.
             logits = model(b_input_ids, b_attn_mask)
 
+            # preds = torch.argmax(logits, dim=1).flatten()
             # Compute loss and accumulate the loss values
-            import pdb; pdb.set_trace()
             loss = loss_fn(logits, b_labels)
             batch_loss += loss.item()
             total_loss += loss.item()
