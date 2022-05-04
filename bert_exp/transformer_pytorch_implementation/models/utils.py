@@ -40,17 +40,22 @@ def attention(query, key, value, mask=None, dropout=None):
     weight assigned to each value is computed by a compatibiliyt function of the query with the corresponding key.
 
 
-
     TODO: additive attention : using feed-forward network for scores with a single layer
           Dot product attention : identical, but different scale factors.
 
 
-    the query is from the decoder hidden state
-    the key and value are from the encoder hidden states (key and value are the same).
+    the query is from the decoder hidden state => the word for which we are calculating attention
+    the key and value are from the encoder hidden states (key and value are the same). => the word to which we are paying attention => how relevant is that word to the query word.
+
+
 
     The score is the compatibility between the query and key, which can be a dot product between the query and key (or other form of compatibility).
     The scores then go through the softmax function to yield a set of weights whose sum equals 1.
     Each weight multiplies its corresponding values to yield the context vector which utilizes all the input hidden states.
+
+    for self-attention, Q,K,V are often the same resource.
+
+
 
     """
     d_k = query.size(-1)
@@ -63,3 +68,21 @@ def attention(query, key, value, mask=None, dropout=None):
     if dropout is not None:
         p_attn = dropout(p_attn)
     return torch.matmul(p_attn, value), p_attn
+
+
+class SimpleLossCompute:
+    "A simple loss compute and train function."
+    def __init__(self, generator, criterion, opt=None):
+        self.generator = generator
+        self.criterion = criterion
+        self.opt = opt
+
+    def __call__(self, x, y, norm):
+        x = self.generator(x)
+        loss = self.criterion(x.contiguous().view(-1, x.size(-1)),
+                              y.contiguous().view(-1)) / norm
+        loss.backward()
+        if self.opt is not None:
+            self.opt.step()
+            self.opt.optimizer.zero_grad()
+        return loss.data.item() * norm
